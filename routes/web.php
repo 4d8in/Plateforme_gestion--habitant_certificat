@@ -22,8 +22,11 @@ Route::middleware('auth')->group(function () {
         Route::resource('habitants', HabitantController::class);
 
             // Certificats CRUD et recherche
-            Route::get('certificats', [CertificatController::class, 'index'])
-                ->name('certificats.index');
+        Route::get('certificats', [CertificatController::class, 'index'])
+            ->name('certificats.index');
+        // Export must be defined before param routes to avoid conflicts
+        Route::get('certificats/export', [CertificatController::class, 'export'])
+            ->name('certificats.export');
         Route::get('habitants/{habitant}/certificats/create', [CertificatController::class, 'create'])
             ->name('certificats.create');
         Route::post('habitants/{habitant}/certificats', [CertificatController::class, 'store'])
@@ -31,8 +34,6 @@ Route::middleware('auth')->group(function () {
 
         Route::get('certificats/{certificat}', [CertificatController::class, 'show'])
             ->name('certificats.show');
-        Route::get('certificats/export', [CertificatController::class, 'export'])
-            ->name('certificats.export');
             Route::get('certificats/{certificat}/edit', [CertificatController::class, 'edit'])
                 ->name('certificats.edit');
             Route::put('certificats/{certificat}', [CertificatController::class, 'update'])

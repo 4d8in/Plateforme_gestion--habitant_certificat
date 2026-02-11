@@ -14,6 +14,7 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\StreamedResponse;
 
 class CertificatController extends Controller
@@ -213,7 +214,7 @@ class CertificatController extends Controller
     /**
      * Export filtered certificats as CSV or PDF.
      */
-    public function export(Request $request): StreamedResponse
+    public function export(Request $request): Response
     {
         $format = strtolower((string) $request->query('format', 'csv'));
         $certificats = $this->filteredQuery($request)->with('habitant')->get();

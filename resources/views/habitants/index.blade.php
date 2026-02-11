@@ -38,7 +38,7 @@
 
                         <a
                             href="{{ route('habitants.create') }}"
-                            class="inline-flex items-center justify-center px-4 py-2 bg-indigo-600 border border-indigo-600 rounded-md font-semibold text-xs text-white uppercase tracking-widest shadow-sm hover:bg-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-400 focus:ring-offset-2"
+                            class="inline-flex items-center justify-center px-4 py-2 bg-indigo-600 border border-indigo-600 rounded-md font-semibold text-xs text-black uppercase tracking-widest shadow-sm hover:bg-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-400 focus:ring-offset-2"
                             style="background-color:#2563eb;color:#ffffff;border:1px solid #2563eb;"
                         >
                             Nouvel habitant
