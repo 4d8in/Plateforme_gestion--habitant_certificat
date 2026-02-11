@@ -18,12 +18,11 @@ RUN apt-get update && apt-get install -y \
 # Composer
 COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
 
-# Install PHP dependencies early (cache-friendly)
-COPY composer.json composer.lock /var/www/
-RUN composer install --no-dev --optimize-autoloader --no-interaction --no-progress
-
-# App files
+# App files (needed for artisan during composer scripts)
 COPY . /var/www
+
+# Install PHP dependencies
+RUN composer install --no-dev --optimize-autoloader --no-interaction --no-progress
 
 # Copy built assets from frontend stage
 COPY --from=frontend /app/public/build /var/www/public/build
