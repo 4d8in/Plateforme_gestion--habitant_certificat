@@ -15,6 +15,9 @@ RUN apt-get update && apt-get install -y \
     && docker-php-ext-install pdo pdo_pgsql zip gd \
     && apt-get clean && rm -rf /var/lib/apt/lists/*
 
+# Force IPv4 preference (Supabase IPv6 not reachable from Render free)
+RUN echo 'precedence ::ffff:0:0/96  100' >> /etc/gai.conf
+
 # Composer
 COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
 
