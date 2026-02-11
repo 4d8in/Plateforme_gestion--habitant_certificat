@@ -18,6 +18,10 @@ RUN apt-get update && apt-get install -y \
 # Composer
 COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
 
+# Install PHP dependencies early (cache-friendly)
+COPY composer.json composer.lock /var/www/
+RUN composer install --no-dev --optimize-autoloader --no-interaction --no-progress
+
 # App files
 COPY . /var/www
 
