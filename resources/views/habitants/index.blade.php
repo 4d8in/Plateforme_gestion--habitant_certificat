@@ -15,30 +15,31 @@
                         </div>
                     @endif
 
-                    <div class="flex items-center justify-between mb-4">
-                        <form method="GET" action="{{ route('habitants.index') }}" class="flex gap-2">
+                    <div class="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between mb-6">
+                        <form method="GET" action="{{ route('habitants.index') }}" class="flex flex-col sm:flex-row w-full gap-3">
                             <input
                                 type="text"
                                 name="search"
                                 value="{{ request('search') }}"
                                 placeholder="Rechercher par nom, prénom ou email"
-                                class="border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500"
+                                class="w-full sm:w-64 border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500"
                             >
                             <input
                                 type="text"
                                 name="quartier"
                                 value="{{ request('quartier') }}"
                                 placeholder="Quartier"
-                                class="border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500"
+                            class="w-full sm:w-48 border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500"
                             >
-                            <x-primary-button>
+                            <x-primary-button class="w-full sm:w-auto">
                                 Rechercher
                             </x-primary-button>
                         </form>
 
                         <a
                             href="{{ route('habitants.create') }}"
-                            class="inline-flex items-center px-4 py-2 bg-indigo-600 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
+                            class="inline-flex items-center justify-center px-4 py-2 bg-indigo-600 border border-indigo-600 rounded-md font-semibold text-xs text-white uppercase tracking-widest shadow-sm hover:bg-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-400 focus:ring-offset-2"
+                            style="background-color:#2563eb;color:#ffffff;border:1px solid #2563eb;"
                         >
                             Nouvel habitant
                         </a>
@@ -125,4 +126,3 @@
         </div>
     </div>
 </x-app-layout>
-

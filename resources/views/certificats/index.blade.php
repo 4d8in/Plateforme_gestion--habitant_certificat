@@ -27,20 +27,20 @@
                         </div>
                     @endif
 
-                    <div class="flex items-center justify-between mb-6">
-                        <form method="GET" action="{{ route('certificats.index') }}" class="flex flex-wrap gap-3 items-end">
+                    <div class="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between mb-6">
+                        <form method="GET" action="{{ route('certificats.index') }}" class="flex flex-wrap gap-3 items-end w-full">
                             <input
                                 type="text"
                                 name="search"
                                 value="{{ request('search') }}"
                                 placeholder="Habitant, quartier"
                                 aria-label="Recherche par habitant ou quartier"
-                                class="border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500"
+                                class="w-full sm:w-64 border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500"
                             >
 
                             <select
                                 name="statut"
-                                class="border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500"
+                                    class="w-full sm:w-auto border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500"
                             >
                                 <option value="">Tous les statuts</option>
                                 @foreach (config('certificat.statuses') as $value => $meta)
@@ -82,7 +82,7 @@
                                         name="montant_min"
                                         value="{{ $montantMin }}"
                                         min="0"
-                                        class="w-28 border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500"
+                                    class="w-full sm:w-28 border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500"
                                         placeholder="0"
                                     >
                                 </div>
@@ -94,7 +94,7 @@
                                         name="montant_max"
                                         value="{{ $montantMax }}"
                                         min="0"
-                                        class="w-28 border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500"
+                                    class="w-full sm:w-28 border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500"
                                         placeholder="5000"
                                     >
                                 </div>
@@ -111,18 +111,18 @@
                                 Retards (>{{ $pendingAlertDays }} j)
                             </label>
 
-                            <x-primary-button>
+                            <x-primary-button class="w-full sm:w-auto">
                                 Rechercher
                             </x-primary-button>
                             <a
                                 href="{{ route('certificats.export', request()->query()) }}"
-                                class="inline-flex items-center px-4 py-2 border border-gray-300 rounded-md font-semibold text-xs text-gray-700 uppercase tracking-widest shadow-sm hover:bg-gray-50"
+                                class="inline-flex items-center justify-center px-4 py-2 border border-gray-300 rounded-md font-semibold text-xs text-gray-700 uppercase tracking-widest shadow-sm hover:bg-gray-50 w-full sm:w-auto"
                             >
                                 Export CSV
                             </a>
                             <a
                                 href="{{ route('certificats.export', array_merge(request()->query(), ['format' => 'pdf'])) }}"
-                                class="inline-flex items-center px-4 py-2 border border-gray-300 rounded-md font-semibold text-xs text-gray-700 uppercase tracking-widest shadow-sm hover:bg-gray-50"
+                                class="inline-flex items-center justify-center px-4 py-2 border border-gray-300 rounded-md font-semibold text-xs text-gray-700 uppercase tracking-widest shadow-sm hover:bg-gray-50 w-full sm:w-auto"
                             >
                                 Export PDF
                             </a>
