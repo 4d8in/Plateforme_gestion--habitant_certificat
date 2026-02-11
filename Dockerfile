@@ -11,7 +11,7 @@ WORKDIR /var/www
 
 # Dependencies for PHP extensions, zip, gd, postgres
 RUN apt-get update && apt-get install -y \
-    git unzip libpng-dev libonig-dev libzip-dev libpq-dev nginx supervisor \
+    git unzip libpng-dev libonig-dev libzip-dev libpq-dev nginx supervisor sed \
     && docker-php-ext-install pdo pdo_pgsql zip gd \
     && apt-get clean && rm -rf /var/lib/apt/lists/*
 

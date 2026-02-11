@@ -15,8 +15,7 @@ php artisan view:cache
 php artisan storage:link || true
 
 # Inject PORT into nginx config (Render provides PORT)
-if [ -n "${PORT:-}" ]; then
-  envsubst '\$PORT' < /etc/nginx/nginx.conf > /etc/nginx/nginx.conf.out && mv /etc/nginx/nginx.conf.out /etc/nginx/nginx.conf
-fi
+PORT_VALUE=${PORT:-10000}
+sed -i "s/{{PORT}}/${PORT_VALUE}/g" /etc/nginx/nginx.conf
 
 exec /usr/bin/supervisord -c /etc/supervisor/conf.d/supervisord.conf
