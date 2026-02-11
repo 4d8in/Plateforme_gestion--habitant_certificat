@@ -1,6 +1,8 @@
 <svg xmlns="http://www.w3.org/2000/svg"
      viewBox="0 0 128 128"
+     width="80" height="80"
      aria-label="Logo"
+     style="display:block"
      {{ $attributes->merge(['class' => '']) }}>
     <g fill="currentColor">
         <!-- Gear base -->
