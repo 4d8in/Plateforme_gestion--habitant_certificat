@@ -31,6 +31,8 @@ Route::middleware('auth')->group(function () {
 
         Route::get('certificats/{certificat}', [CertificatController::class, 'show'])
             ->name('certificats.show');
+        Route::get('certificats/export', [CertificatController::class, 'export'])
+            ->name('certificats.export');
             Route::get('certificats/{certificat}/edit', [CertificatController::class, 'edit'])
                 ->name('certificats.edit');
             Route::put('certificats/{certificat}', [CertificatController::class, 'update'])

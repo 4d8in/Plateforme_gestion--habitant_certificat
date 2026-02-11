@@ -45,7 +45,7 @@
                             <tr>
                                 <td class="px-4 py-2 font-semibold border-b border-gray-200">Statut</td>
                                 <td class="px-4 py-2 border-b border-gray-200">
-                                    {{ ucfirst(str_replace('_', ' ', $certificat->statut)) }}
+                                    <x-status-badge :statut="$certificat->statut" />
                                 </td>
                             </tr>
                             <tr>
@@ -94,4 +94,3 @@
         </div>
     </div>
 </x-app-layout>
-

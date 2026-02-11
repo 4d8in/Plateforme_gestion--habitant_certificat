@@ -93,7 +93,7 @@
                                             {{ $certificat->date_certificat?->format('d/m/Y') }}
                                         </td>
                                         <td class="px-4 py-2 whitespace-nowrap">
-                                            {{ ucfirst(str_replace('_', ' ', $certificat->statut)) }}
+                                            <x-status-badge :statut="$certificat->statut" />
                                         </td>
                                         <td class="px-4 py-2 whitespace-nowrap">
                                             {{ number_format($certificat->montant, 0, ',', ' ') }} FCFA
@@ -125,4 +125,3 @@
         </div>
     </div>
 </x-app-layout>
-

@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>Bilan du projet – Gestion des habitants & certificats</title>
+    <style>
+        :root {
+            --accent: #2563eb;
+            --muted: #6b7280;
+            --border: #e5e7eb;
+            --bg: #f8fafc;
+            --card: #ffffff;
+        }
+        * { box-sizing: border-box; }
+        body {
+            margin: 0;
+            font-family: "Inter", "Segoe UI", system-ui, -apple-system, sans-serif;
+            color: #0f172a;
+            background: var(--bg);
+            line-height: 1.6;
+            padding: 32px;
+        }
+        .page {
+            max-width: 900px;
+            margin: 0 auto 48px;
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 32px 36px;
+            box-shadow: 0 12px 40px rgba(15, 23, 42, 0.08);
+        }
+        h1, h2, h3 {
+            margin: 0 0 12px;
+            line-height: 1.25;
+        }
+        h1 { font-size: 30px; color: #0f172a; }
+        h2 { font-size: 22px; color: #111827; border-bottom: 2px solid var(--border); padding-bottom: 8px; }
+        h3 { font-size: 16px; color: #111827; text-transform: uppercase; letter-spacing: 0.05em; }
+        p { margin: 0 0 12px; }
+        ul { margin: 0 0 12px 18px; }
+        .muted { color: var(--muted); }
+        .pill {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 6px 10px;
+            border-radius: 999px;
+            font-size: 12px;
+            background: #e0e7ff;
+            color: #1d4ed8;
+            font-weight: 600;
+        }
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+            gap: 12px;
+        }
+        .card {
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 14px 16px;
+            background: #fff;
+        }
+        .hero {
+            padding: 20px;
+            border-radius: 14px;
+            background: linear-gradient(135deg, #e0f2fe, #eef2ff);
+            border: 1px solid #dfe7ff;
+            margin-bottom: 18px;
+        }
+        .table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 12px 0;
+            font-size: 14px;
+        }
+        .table th, .table td {
+            border: 1px solid var(--border);
+            padding: 8px 10px;
+            text-align: left;
+        }
+        .table th {
+            background: #f1f5f9;
+            font-weight: 700;
+        }
+        .screenshot {
+            width: 100%;
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            overflow: hidden;
+            margin: 10px 0 18px;
+        }
+        .screenshot img {
+            display: block;
+            width: 100%;
+        }
+        .footer {
+            text-align: center;
+            margin-top: 16px;
+            color: var(--muted);
+            font-size: 12px;
+        }
+    </style>
+</head>
+<body>
+    <div class="page">
+        <h1>Bilan du projet</h1>
+        <p class="muted">Gestion des habitants & certificats de résidence — Web2 (L3 ESTM)</p>
+
+        <div class="hero">
+            <p><strong>Binôme :</strong> [Nom 1] / [Nom 2]</p>
+            <p><strong>Encadrant :</strong> Ibrahima Gaye · <strong>Date :</strong> 11/02/2026</p>
+            <p><span class="pill">Stack</span> Laravel 12 · Blade/Tailwind · PostgreSQL (Supabase) · PayDunya · DomPDF</p>
+        </div>
+
+        <h2>1. Résumé exécutif</h2>
+        <p>Plateforme web de gestion des habitants et de leurs certificats de résidence, avec paiement en ligne PayDunya, génération PDF, filtres avancés, exports CSV/PDF et alertes sur les certificats en retard. Déployable sur PostgreSQL/Supabase.</p>
+
+        <h2>2. Objectifs & périmètre</h2>
+        <ul>
+            <li>Gérer les habitants (profil, quartier, majorité légale).</li>
+            <li>Émettre et suivre des certificats payants, téléchargeables en PDF.</li>
+            <li>Authentifier via Breeze et sécuriser l’accès.</li>
+            <li>Intégrer un PSP (PayDunya) et préparer les entités du MCD complet.</li>
+        </ul>
+
+        <h2>3. Architecture & choix techniques</h2>
+        <div class="grid">
+            <div class="card">
+                <h3>Backend</h3>
+                <ul>
+                    <li>Laravel 12 (PHP 8.2)</li>
+                    <li>Services (PayDunyaService)</li>
+                    <li>FormRequests pour validations</li>
+                </ul>
+            </div>
+            <div class="card">
+                <h3>Front</h3>
+                <ul>
+                    <li>Blade + Tailwind (Vite)</li>
+                    <li>Composants : badges statuts, boutons</li>
+                </ul>
+            </div>
+            <div class="card">
+                <h3>Données</h3>
+                <ul>
+                    <li>PostgreSQL sur Supabase</li>
+                    <li>Index sur statut, dates, quartier</li>
+                    <li>Factories + seeders de démo</li>
+                </ul>
+            </div>
+            <div class="card">
+                <h3>PDF & Paiement</h3>
+                <ul>
+                    <li>DomPDF pour certificats & exports</li>
+                    <li>PayDunya sandbox/live via .env</li>
+                </ul>
+            </div>
+        </div>
+
+        <h2>4. Fonctionnalités livrées</h2>
+        <ul>
+            <li>Habitants : CRUD, recherche, validation d’âge (≥18 ans), pagination.</li>
+            <li>Certificats : statuts (en_attente, payé, délivré), PDF, montant configurable, lien habitant.</li>
+            <li>Paiement : création facture PayDunya, callbacks retour/annulation/IPN.</li>
+            <li>Filtrage : statut, date du/au, montant min/max, retards &gt; X jours.</li>
+            <li>Exports : CSV/PDF basés sur les filtres actifs.</li>
+            <li>Dashboard : revenus, habitants, certificats en attente et en retard.</li>
+            <li>UX/A11y : badges colorés, alertes retards, messages d’erreur, fond doux, aria-labels.</li>
+            <li>Paramétrage : `config/certificat.php` (montant, labels, couleurs, seuil retards).</li>
+        </ul>
+
+        <h2>5. Sécurité, conformité, qualité</h2>
+        <ul>
+            <li>Validations via FormRequests ; blocage d’un second certificat « en attente » pour un habitant.</li>
+            <li>Clés PayDunya uniquement en .env ; emails uniques ; recherches case-insensitive PostgreSQL.</li>
+            <li>Config centralisée ; structure prête pour logs structurés/events.</li>
+        </ul>
+
+        <h2>6. Données & indexation (PostgreSQL/Supabase)</h2>
+        <table class="table">
+            <thead><tr><th>Table</th><th>Champs clés</th><th>Index</th></tr></thead>
+            <tbody>
+                <tr>
+                    <td>habitants</td>
+                    <td>nom, prenom, email unique, téléphone, date_naissance, quartier</td>
+                    <td>quartier</td>
+                </tr>
+                <tr>
+                    <td>certificats</td>
+                    <td>habitant_id (FK), date_certificat, statut, montant, reference_paiement</td>
+                    <td>statut, date_certificat, created_at</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <h2>7. Déploiement & configuration</h2>
+        <ul>
+            <li>DB : `DB_CONNECTION=pgsql`, `DB_HOST/PORT/NAME/USER/PASSWORD` (Supabase, SSL recommandé).</li>
+            <li>PayDunya : `PAYDUNYA_MODE`, `PAYDUNYA_MASTER_KEY`, `PAYDUNYA_PRIVATE_KEY`, `PAYDUNYA_TOKEN`.</li>
+            <li>App : `APP_URL`, `APP_ENV`, `APP_KEY`, `MAIL_*` pour la vérification email.</li>
+        </ul>
+        <p><strong>Install & build</strong></p>
+        <pre><code>cp .env.example .env
+composer install
+php artisan key:generate
+php artisan migrate --seed
+npm install && npm run build   # ou npm run dev
+php artisan serve</code></pre>
+
+        <h2>8. Tests de validation rapide</h2>
+        <ul>
+            <li>Habitant &lt; 18 ans : échec attendu.</li>
+            <li>Certificat : refus d’un second « en attente » pour le même habitant.</li>
+            <li>Paiement sandbox : en_attente → payé (callback) → délivré au téléchargement PDF.</li>
+            <li>Exports CSV/PDF : vérifier filtres (statut, dates, montants).</li>
+            <li>Retards &gt; X jours : badge et filtrage depuis dashboard.</li>
+        </ul>
+
+        <h2>9. Risques & améliorations prévues</h2>
+        <ul>
+            <li>Sécurité PayDunya : signature/HMAC, timeouts + retries.</li>
+            <li>Rôles/policies : admin, agent, lecture seule.</li>
+            <li>Fiabilité : soft deletes, audit trail, cron/queue pour re-vérifier les factures en attente.</li>
+            <li>PDF : QR de vérification, numéro séquentiel, branding collectivité.</li>
+            <li>MCD complet : Quartier, Maison, Propriétaire ; import CSV quartiers.</li>
+            <li>Tests auto : flux paiement (Http::fake), exports, policies, retards.</li>
+        </ul>
+
+        <h2>10. Captures d’écran</h2>
+        <div class="screenshot">
+            <img src="images/dashboard.png" alt="Dashboard">
+        </div>
+        <div class="screenshot">
+            <img src="images/habitants.png" alt="Liste des habitants">
+        </div>
+        <div class="screenshot">
+            <img src="images/certificats.png" alt="Flux certificat/paiement">
+        </div>
+
+        <h2>11. Conclusion</h2>
+        <p>Les exigences (habitants, certificats, paiement, auth, PDF) sont couvertes. L’intégration Supabase/PostgreSQL est prête pour la production grâce aux index et aux paramètres centralisés. Le backlog cible la sécurité PayDunya, les rôles et la complétude du MCD.</p>
+
+        <div class="footer">Bilan généré pour le projet Web2 – Gestion des habitants & certificats.</div>
+    </div>
+</body>
+</html>

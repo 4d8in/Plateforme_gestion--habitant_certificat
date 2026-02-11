@@ -24,7 +24,7 @@ class CertificatSeeder extends Seeder
                 'habitant_id' => $habitant->id,
                 'date_certificat' => now()->subDays(rand(1, 30))->toDateString(),
                 'statut' => Certificat::STATUT_EN_ATTENTE,
-                'montant' => 5000,
+                'montant' => (int) config('certificat.default_montant', 5000),
                 'reference_paiement' => 'TEST_ATT_'.$habitant->id,
             ]);
 
@@ -33,7 +33,7 @@ class CertificatSeeder extends Seeder
                 'habitant_id' => $habitant->id,
                 'date_certificat' => now()->subDays(rand(31, 90))->toDateString(),
                 'statut' => Certificat::STATUT_PAYE,
-                'montant' => 5000,
+                'montant' => (int) config('certificat.default_montant', 5000),
                 'reference_paiement' => 'TEST_PAYE_'.$habitant->id,
             ]);
 
@@ -42,10 +42,9 @@ class CertificatSeeder extends Seeder
                 'habitant_id' => $habitant->id,
                 'date_certificat' => now()->subDays(rand(91, 180))->toDateString(),
                 'statut' => Certificat::STATUT_DELIVRE,
-                'montant' => 5000,
+                'montant' => (int) config('certificat.default_montant', 5000),
                 'reference_paiement' => 'TEST_DEL_'.$habitant->id,
             ]);
         }
     }
 }
-

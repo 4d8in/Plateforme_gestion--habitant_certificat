@@ -23,12 +23,15 @@ class DashboardController extends Controller
         $nombreHabitants = Habitant::count();
 
         $certificatsEnAttente = Certificat::where('statut', Certificat::STATUT_EN_ATTENTE)->count();
+        $certificatsRetard = Certificat::where('statut', Certificat::STATUT_EN_ATTENTE)
+            ->whereDate('created_at', '<=', now()->subDays((int) config('certificat.pending_alert_days', 7)))
+            ->count();
 
         return view('dashboard', [
             'totalRevenus' => $totalRevenus,
             'nombreHabitants' => $nombreHabitants,
             'certificatsEnAttente' => $certificatsEnAttente,
+            'certificatsRetard' => $certificatsRetard,
         ]);
     }
 }
-

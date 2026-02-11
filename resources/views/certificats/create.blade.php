@@ -14,6 +14,11 @@
                             {{ session('error') }}
                         </div>
                     @endif
+                    @if ($errors->any())
+                        <div class="mb-4 text-sm text-red-600">
+                            {{ $errors->first() }}
+                        </div>
+                    @endif
 
                     <p class="mb-4">
                         Vous êtes sur le point de créer un certificat de résidence pour :
@@ -35,7 +40,9 @@
                             </tr>
                             <tr>
                                 <td class="px-4 py-2 font-semibold">Montant</td>
-                                <td class="px-4 py-2">5 000 FCFA</td>
+                                <td class="px-4 py-2">
+                                    {{ number_format(config('certificat.default_montant', 5000), 0, ',', ' ') }} FCFA
+                                </td>
                             </tr>
                         </tbody>
                     </table>
@@ -61,4 +68,3 @@
         </div>
     </div>
 </x-app-layout>
-

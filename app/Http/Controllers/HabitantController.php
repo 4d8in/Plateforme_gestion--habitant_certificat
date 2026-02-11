@@ -24,15 +24,17 @@ class HabitantController extends Controller
         $query = Habitant::query();
 
         if ($search !== '') {
-            $query->where(function ($q) use ($search): void {
-                $q->where('nom', 'ilike', '%'.$search.'%')
-                    ->orWhere('prenom', 'ilike', '%'.$search.'%')
-                    ->orWhere('email', 'ilike', '%'.$search.'%');
+            $normalized = strtolower($search);
+            $query->where(function ($q) use ($normalized): void {
+                $q->whereRaw('LOWER(nom) LIKE ?', ['%'.$normalized.'%'])
+                    ->orWhereRaw('LOWER(prenom) LIKE ?', ['%'.$normalized.'%'])
+                    ->orWhereRaw('LOWER(email) LIKE ?', ['%'.$normalized.'%']);
             });
         }
 
         if ($quartier !== '') {
-            $query->where('quartier', 'ilike', '%'.$quartier.'%');
+            $normalizedQuartier = strtolower($quartier);
+            $query->whereRaw('LOWER(quartier) LIKE ?', ['%'.$normalizedQuartier.'%']);
         }
 
         $habitants = $query->latest()->paginate(10)->withQueryString();
@@ -108,4 +110,3 @@ class HabitantController extends Controller
             ->with('success', 'Habitant supprimé avec succès.');
     }
 }
-

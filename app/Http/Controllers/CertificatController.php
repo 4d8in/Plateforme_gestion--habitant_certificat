@@ -4,13 +4,17 @@ declare(strict_types=1);
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\StoreCertificatRequest;
+use App\Http\Requests\UpdateCertificatRequest;
 use App\Models\Certificat;
 use App\Models\Habitant;
 use App\Services\PayDunyaService;
 use Barryvdh\DomPDF\Facade\Pdf;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Symfony\Component\HttpFoundation\StreamedResponse;
 
 class CertificatController extends Controller
 {
@@ -19,30 +23,25 @@ class CertificatController extends Controller
      */
     public function index(Request $request): View
     {
-        $search = (string) $request->query('search', '');
-        $statut = (string) $request->query('statut', '');
+        $pendingAlertDays = (int) config('certificat.pending_alert_days', 7);
 
-        $query = Certificat::with('habitant')->orderByDesc('date_certificat');
+        $certificats = $this->filteredQuery($request)->paginate(10)->withQueryString();
 
-        if ($search !== '') {
-            $query->whereHas('habitant', function ($q) use ($search): void {
-                $q->where('nom', 'ilike', '%'.$search.'%')
-                    ->orWhere('prenom', 'ilike', '%'.$search.'%')
-                    ->orWhere('email', 'ilike', '%'.$search.'%')
-                    ->orWhere('quartier', 'ilike', '%'.$search.'%');
-            });
-        }
-
-        if ($statut !== '') {
-            $query->where('statut', $statut);
-        }
-
-        $certificats = $query->paginate(10)->withQueryString();
+        $retardCountTotal = Certificat::where('statut', Certificat::STATUT_EN_ATTENTE)
+            ->whereDate('created_at', '<=', now()->subDays($pendingAlertDays))
+            ->count();
 
         return view('certificats.index', [
             'certificats' => $certificats,
-            'search' => $search,
-            'statut' => $statut,
+            'search' => (string) $request->query('search', ''),
+            'statut' => (string) $request->query('statut', ''),
+            'dateFrom' => (string) $request->query('date_from', ''),
+            'dateTo' => (string) $request->query('date_to', ''),
+            'montantMin' => (string) $request->query('montant_min', ''),
+            'montantMax' => (string) $request->query('montant_max', ''),
+            'onlyLate' => (bool) $request->boolean('retards'),
+            'pendingAlertDays' => $pendingAlertDays,
+            'retardCountTotal' => $retardCountTotal,
         ]);
     }
 
@@ -59,12 +58,14 @@ class CertificatController extends Controller
     /**
      * Create a certificat then create a PayDunya checkout invoice and redirect to payment page.
      */
-    public function store(Habitant $habitant, PayDunyaService $payDunya): RedirectResponse
+    public function store(StoreCertificatRequest $request, Habitant $habitant, PayDunyaService $payDunya): RedirectResponse
     {
+        $montant = (int) ($request->validated()['montant'] ?? config('certificat.default_montant', 5000));
+
         $certificat = $habitant->certificats()->create([
             'date_certificat' => now()->toDateString(),
             'statut' => Certificat::STATUT_EN_ATTENTE,
-            'montant' => 5000,
+            'montant' => $montant,
         ]);
 
         try {
@@ -200,24 +201,109 @@ class CertificatController extends Controller
     /**
      * Update the specified certificat in storage.
      */
-    public function update(Request $request, Certificat $certificat): RedirectResponse
+    public function update(UpdateCertificatRequest $request, Certificat $certificat): RedirectResponse
     {
-        $validated = $request->validate([
-            'date_certificat' => ['required', 'date'],
-            'statut' => ['required', 'in:'.implode(',', [
-                Certificat::STATUT_EN_ATTENTE,
-                Certificat::STATUT_PAYE,
-                Certificat::STATUT_DELIVRE,
-            ])],
-            'montant' => ['required', 'integer', 'min:0'],
-            'reference_paiement' => ['nullable', 'string', 'max:255'],
-        ]);
-
-        $certificat->update($validated);
+        $certificat->update($request->validated());
 
         return redirect()
             ->route('certificats.show', $certificat)
             ->with('success', 'Certificat mis à jour avec succès.');
+    }
+
+    /**
+     * Export filtered certificats as CSV or PDF.
+     */
+    public function export(Request $request): StreamedResponse
+    {
+        $format = strtolower((string) $request->query('format', 'csv'));
+        $certificats = $this->filteredQuery($request)->with('habitant')->get();
+
+        if ($format === 'pdf') {
+            $pdf = Pdf::loadView('certificats.export', [
+                'certificats' => $certificats,
+                'generatedAt' => now(),
+            ]);
+
+            return $pdf->download('certificats-'.now()->format('Ymd_His').'.pdf');
+        }
+
+        $filename = 'certificats-'.now()->format('Ymd_His').'.csv';
+
+        return response()->streamDownload(function () use ($certificats): void {
+            $handle = fopen('php://output', 'w');
+            fputcsv($handle, ['ID', 'Habitant', 'Email', 'Quartier', 'Date', 'Statut', 'Montant', 'Référence']);
+
+            foreach ($certificats as $certificat) {
+                fputcsv($handle, [
+                    $certificat->id,
+                    $certificat->habitant->nom_complet,
+                    $certificat->habitant->email,
+                    $certificat->habitant->quartier,
+                    optional($certificat->date_certificat)->format('Y-m-d'),
+                    $certificat->statut,
+                    $certificat->montant,
+                    $certificat->reference_paiement,
+                ]);
+            }
+
+            fclose($handle);
+        }, $filename, [
+            'Content-Type' => 'text/csv; charset=UTF-8',
+        ]);
+    }
+
+    /**
+     * Build a filtered query reused by index/export.
+     */
+    protected function filteredQuery(Request $request): Builder
+    {
+        $search = (string) $request->query('search', '');
+        $statut = (string) $request->query('statut', '');
+        $dateFrom = (string) $request->query('date_from', '');
+        $dateTo = (string) $request->query('date_to', '');
+        $montantMin = (string) $request->query('montant_min', '');
+        $montantMax = (string) $request->query('montant_max', '');
+        $onlyLate = (bool) $request->boolean('retards');
+        $pendingAlertDays = (int) config('certificat.pending_alert_days', 7);
+
+        $query = Certificat::with('habitant')->orderByDesc('date_certificat');
+
+        if ($search !== '') {
+            $normalized = strtolower($search);
+            $query->whereHas('habitant', function ($q) use ($normalized): void {
+                $q->whereRaw('LOWER(nom) LIKE ?', ['%'.$normalized.'%'])
+                    ->orWhereRaw('LOWER(prenom) LIKE ?', ['%'.$normalized.'%'])
+                    ->orWhereRaw('LOWER(email) LIKE ?', ['%'.$normalized.'%'])
+                    ->orWhereRaw('LOWER(quartier) LIKE ?', ['%'.$normalized.'%']);
+            });
+        }
+
+        if ($statut !== '') {
+            $query->where('statut', $statut);
+        }
+
+        if ($dateFrom !== '') {
+            $query->whereDate('date_certificat', '>=', $dateFrom);
+        }
+
+        if ($dateTo !== '') {
+            $query->whereDate('date_certificat', '<=', $dateTo);
+        }
+
+        if ($montantMin !== '') {
+            $query->where('montant', '>=', (int) $montantMin);
+        }
+
+        if ($montantMax !== '') {
+            $query->where('montant', '<=', (int) $montantMax);
+        }
+
+        if ($onlyLate) {
+            $query->where('statut', Certificat::STATUT_EN_ATTENTE)
+                ->whereDate('created_at', '<=', now()->subDays($pendingAlertDays));
+        }
+
+        return $query;
     }
 
     /**
@@ -252,4 +338,3 @@ class CertificatController extends Controller
         return $pdf->download($filename);
     }
 }
-

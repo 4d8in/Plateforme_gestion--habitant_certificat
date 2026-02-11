@@ -47,15 +47,11 @@
                                 class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500"
                                 required
                             >
-                                <option value="{{ \App\Models\Certificat::STATUT_EN_ATTENTE }}" @selected(old('statut', $certificat->statut) === \App\Models\Certificat::STATUT_EN_ATTENTE)>
-                                    En attente
-                                </option>
-                                <option value="{{ \App\Models\Certificat::STATUT_PAYE }}" @selected(old('statut', $certificat->statut) === \App\Models\Certificat::STATUT_PAYE)>
-                                    Payé
-                                </option>
-                                <option value="{{ \App\Models\Certificat::STATUT_DELIVRE }}" @selected(old('statut', $certificat->statut) === \App\Models\Certificat::STATUT_DELIVRE)>
-                                    Délivré
-                                </option>
+                                @foreach (config('certificat.statuses') as $value => $meta)
+                                    <option value="{{ $value }}" @selected(old('statut', $certificat->statut) === $value)>
+                                        {{ $meta['label'] ?? ucfirst($value) }}
+                                    </option>
+                                @endforeach
                             </select>
                             <x-input-error :messages="$errors->get('statut')" class="mt-2" />
                         </div>
@@ -105,4 +101,3 @@
         </div>
     </div>
 </x-app-layout>
-

@@ -25,9 +25,8 @@ class CertificatFactory extends Factory
                 Certificat::STATUT_PAYE,
                 Certificat::STATUT_DELIVRE,
             ]),
-            'montant' => 5000,
+            'montant' => (int) config('certificat.default_montant', 5000),
             'reference_paiement' => 'TEST_'.strtoupper($faker->bothify('########')),
         ];
     }
 }
-
