@@ -1,0 +1,75 @@
+<x-app-layout>
+    <x-slot name="header">
+        <h2 class="font-semibold text-xl text-gray-800 leading-tight">
+            {{ __('Tableau de bord') }}
+        </h2>
+    </x-slot>
+
+    <div class="py-12">
+        <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
+            <div class="mb-6">
+                @if (session('success'))
+                    <div class="mb-4 text-sm text-green-600">
+                        {{ session('success') }}
+                    </div>
+                @endif
+
+                @if (session('error'))
+                    <div class="mb-4 text-sm text-red-600">
+                        {{ session('error') }}
+                    </div>
+                @endif
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
+                    <div class="p-6">
+                        <div class="text-sm font-medium text-gray-500">
+                            Nombre d'habitants
+                        </div>
+                        <div class="mt-2 text-3xl font-bold text-gray-900">
+                            {{ $nombreHabitants }}
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
+                    <div class="p-6">
+                        <div class="text-sm font-medium text-gray-500">
+                            Revenus totaux (certificats payés)
+                        </div>
+                        <div class="mt-2 text-3xl font-bold text-gray-900">
+                            {{ number_format($totalRevenus, 0, ',', ' ') }} FCFA
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
+                    <div class="p-6">
+                        <div class="text-sm font-medium text-gray-500">
+                            Certificats en attente
+                        </div>
+                        <div class="mt-2 text-3xl font-bold text-gray-900">
+                            {{ $certificatsEnAttente }}
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="mt-8 bg-white overflow-hidden shadow-sm sm:rounded-lg">
+                <div class="p-6 text-gray-900">
+                    <h3 class="font-semibold text-gray-700 mb-4">Accès rapide</h3>
+
+                    <div class="flex flex-wrap gap-4">
+                        <a
+                            href="{{ route('habitants.index') }}"
+                            class="inline-flex items-center px-4 py-2 bg-indigo-600 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
+                        >
+                            Gérer les habitants
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</x-app-layout>
