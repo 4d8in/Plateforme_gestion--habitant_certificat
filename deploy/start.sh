@@ -18,4 +18,10 @@ php artisan storage:link || true
 PORT_VALUE=${PORT:-10000}
 sed -i "s/{{PORT}}/${PORT_VALUE}/g" /etc/nginx/nginx.conf
 
+# Safety: warn if vite manifest missing
+if [ ! -f /var/www/public/build/manifest.json ]; then
+  echo "WARNING: public/build/manifest.json not found. Assets may be missing." >&2
+  ls -la /var/www/public || true
+fi
+
 exec /usr/bin/supervisord -c /etc/supervisor/conf.d/supervisord.conf
