@@ -16,6 +16,7 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\StreamedResponse;
+use Illuminate\Support\Facades\Log;
 
 class CertificatController extends Controller
 {
@@ -152,7 +153,10 @@ class CertificatController extends Controller
         // PayDunya envoie un POST application/x-www-form-urlencoded
         $payload = $request->input('data');
 
+        Log::info('PayDunya callback received', ['payload' => $payload]);
+
         if (! is_array($payload)) {
+            Log::warning('PayDunya callback ignored: payload not array');
             return;
         }
 
@@ -160,6 +164,7 @@ class CertificatController extends Controller
         $token = $invoice['token'] ?? null;
 
         if (! $token) {
+            Log::warning('PayDunya callback ignored: missing token');
             return;
         }
 
@@ -167,6 +172,7 @@ class CertificatController extends Controller
         $certificat = Certificat::where('reference_paiement', $token)->first();
 
         if (! $certificat) {
+            Log::warning('PayDunya callback ignored: certificat not found', ['token' => $token]);
             return;
         }
 
@@ -175,6 +181,17 @@ class CertificatController extends Controller
         if ($status === 'completed') {
             $certificat->update([
                 'statut' => Certificat::STATUT_PAYE,
+            ]);
+
+            Log::info('PayDunya callback: certificat marked as payé', [
+                'certificat_id' => $certificat->id,
+                'token' => $token,
+            ]);
+        } else {
+            Log::info('PayDunya callback: status not completed', [
+                'certificat_id' => $certificat->id,
+                'token' => $token,
+                'status' => $status,
             ]);
         }
     }

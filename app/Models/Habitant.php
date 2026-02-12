@@ -24,6 +24,7 @@ class Habitant extends Model
         'telephone',
         'date_naissance',
         'quartier',
+        'password',
     ];
 
     /**
@@ -33,6 +34,7 @@ class Habitant extends Model
      */
     protected $casts = [
         'date_naissance' => 'date',
+        'password' => 'hashed',
     ];
 
     /**
@@ -51,4 +53,3 @@ class Habitant extends Model
         return sprintf('%s %s', $this->prenom, $this->nom);
     }
 }
-

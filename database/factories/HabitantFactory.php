@@ -23,7 +23,7 @@ class HabitantFactory extends Factory
             'telephone' => $faker->numerify('77#######'),
             'date_naissance' => $faker->dateTimeBetween('-60 years', '-18 years')->format('Y-m-d'),
             'quartier' => $faker->randomElement(['Plateau', 'Mermoz', 'Guédiawaye', 'Pikine', 'Parcelles']),
+            'password' => bcrypt('secret123'),
         ];
     }
 }
-

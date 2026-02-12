@@ -1,3 +1,57 @@
+@import url('https://fonts.googleapis.com/css2?family=Manrope:wght@400;600;700&display=swap');
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+@layer base {
+  :root {
+    font-family: 'Manrope', system-ui, -apple-system, sans-serif;
+    color: #0f172a;
+    background-color: #0f172a;
+  }
+
+  body {
+    background: radial-gradient(circle at 20% 20%, #1f2937 0, transparent 25%),
+                radial-gradient(circle at 80% 0%, #0ea5e9 0, transparent 22%),
+                radial-gradient(circle at 50% 80%, #22c55e 0, transparent 25%),
+                #0f172a;
+    min-height: 100vh;
+  }
+}
+
+@layer components {
+  .card {
+    @apply bg-white/90 text-slate-900 rounded-2xl shadow-xl border border-white/60 backdrop-blur-sm;
+  }
+
+  .glass {
+    @apply bg-white/70 backdrop-blur-lg border border-white/40 shadow-lg;
+  }
+
+  .btn-primary {
+    @apply inline-flex items-center justify-center gap-2 px-4 py-2 rounded-xl text-white font-semibold shadow-md transition;
+    background: linear-gradient(135deg, #22c55e, #16a34a);
+  }
+  .btn-primary:hover { filter: brightness(1.05); transform: translateY(-1px); }
+
+  .btn-secondary {
+    @apply inline-flex items-center justify-center gap-2 px-4 py-2 rounded-xl font-semibold text-slate-800 border border-slate-200 bg-white/90 shadow-sm transition;
+  }
+  .btn-secondary:hover { @apply bg-slate-100; }
+
+  .badge {
+    @apply inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold border;
+  }
+
+  .table-soft thead {
+    @apply text-xs uppercase text-slate-500;
+  }
+  .table-soft th,
+  .table-soft td {
+    @apply px-4 py-3;
+  }
+  .table-soft tbody tr:hover {
+    @apply bg-slate-50;
+  }
+}
